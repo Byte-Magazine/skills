@@ -57,6 +57,7 @@ the full list of supported agents and flags.
 | Skill | Description |
 | --- | --- |
 | [`byte-virastari`](skills/byte-virastari/SKILL.md) | Persian copy-editing (ویراستاری نگارشی) for Byte Magazine articles — applies Farhangestan-based Persian orthography rules and Byte's house style. |
+| [`byte-nashr`](skills/byte-nashr/SKILL.md) | Publishes a byte-virastari-corrected article into the byte-new-website repo — writes frontmatter, resolves/creates authors, optimizes images, and converts footnote markers into Tooltip components. |
 
 ## Adding a new skill
 
