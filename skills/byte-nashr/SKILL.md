@@ -1,6 +1,6 @@
 ---
 name: byte-nashr
-description: Publishes a byte-virastari-corrected Persian article (text + loose images) into the byte-new-website repo as a schema-valid MDX article — writes frontmatter, resolves/creates authors, optimizes images (SVG passthrough, WebP conversion over 300KB), converts {{term|explanation}} footnote markers into Tooltip components, and validates against the site's content schema. Use when asked to add/publish an edited Byte article to the website.
+description: Publishes a byte-virastari-corrected Persian article (text + loose images) into the byte-new-website repo as a schema-valid MDX article — writes SEO-ready frontmatter, resolves/creates authors, optimizes images (SVG passthrough, WebP conversion over 300KB) and writes descriptive alt text for each, converts {{term|explanation}} footnote markers into Tooltip components, and validates against the site's content schema. Use when asked to add/publish an edited Byte article to the website.
 ---
 
 # انتشار بایت
@@ -36,7 +36,8 @@ description: Publishes a byte-virastari-corrected Persian article (text + loose 
    تصویر).
 
 2. **نگارش frontmatter.** طبق `references/schema-va-mahal.md`:
-   - `title`, `description` را از متن استخراج کن.
+   - `title`, `description` را از متن استخراج کن؛ `description` بین ۷۰
+     تا ۱۶۰ نویسه، و اگر `:` دارد داخل گیومه.
    - `tags` را با توجه به موضوع مقاله پیشنهاد بده (و در صورت ابهام از
      کاربر بپرس).
    - `date` را از کاربر بپرس اگر مشخص نیست (پیش‌فرض تاریخ امروز
@@ -57,9 +58,14 @@ description: Publishes a byte-virastari-corrected Persian article (text + loose 
 5. **پردازش تصاویر.** طبق `references/tasavir.md` — SVGها بدون تغییر،
    رستری‌های بزرگ‌تر از ۳۰۰ کیلوبایت با `cwebp` به WebP تبدیل شوند،
    ارجاعات داخل متن به‌روزرسانی شوند، فایل‌ها در `img/` مقالهٔ جدید (و
-   عکس نویسنده در صورت وجود در `public/img/authors/`) قرار بگیرند.
+   عکس نویسنده در صورت وجود در `public/img/authors/`، به‌صورت JPEG/PNG
+   و نه WebP) قرار بگیرند. برای **هر** تصویر داخل متن متن جایگزین
+   توصیفی بنویس (`![...](./img/x.webp)`) — جزئیات در `references/tasavir.md`.
 
-6. **تبدیل پاورقی به Tooltip.** هر نشانهٔ `{{واژه یا عبارت|توضیح}}` در
+6. **تیترها.** تیترهای داخل متن از `##` شروع شوند، نه `#` (عنوان مقاله
+   تنها `<h1>` صفحه است).
+
+7. **تبدیل پاورقی به Tooltip.** هر نشانهٔ `{{واژه یا عبارت|توضیح}}` در
    متن را به این JSX تبدیل کن:
 
    ```jsx
@@ -69,7 +75,7 @@ description: Publishes a byte-virastari-corrected Persian article (text + loose 
    دقیقاً مطابق الگوی استفادهٔ موجود در `components/content/tooltip.tsx`
    و مقالات چاپ‌شده.
 
-7. **اعتبارسنجی.** داخل ریپوی `byte-new-website` اجرا کن:
+8. **اعتبارسنجی.** داخل ریپوی `byte-new-website` اجرا کن:
 
    ```bash
    pnpm typecheck
@@ -94,5 +100,5 @@ description: Publishes a byte-virastari-corrected Persian article (text + loose 
 ## خلاصهٔ پایانی
 
 در پایان، به کاربر خلاصه‌ای بده: مسیر فایل `index.mdx` ساخته‌شده، لیست
-عکس‌های پردازش‌شده (با حجم قبل/بعد)، نویسنده(هایی) که استفاده/ساخته
+عکس‌های پردازش‌شده (با حجم قبل/بعد و متن جایگزین هر کدام)، نویسنده(هایی) که استفاده/ساخته
 شدند، تعداد پاورقی‌های تبدیل‌شده به Tooltip، و نتیجهٔ اعتبارسنجی.
