@@ -1,6 +1,6 @@
 ---
 name: byte-nashr
-description: Publishes a byte-virastari-corrected Persian article (text + loose images) into the byte-new-website repo as a schema-valid MDX article — writes SEO-ready frontmatter, resolves/creates authors, optimizes images (SVG passthrough, WebP conversion over 300KB) and writes descriptive alt text for each, converts {{term|explanation}} markers and any markdown footnotes into Tooltip components (the site has no footnotes), and validates against the site's content schema. Use when asked to add/publish an edited Byte article to the website.
+description: Publishes a byte-virastari-corrected Persian article (text + loose images) into the byte-new-website repo as a schema-valid MDX article — writes SEO-ready frontmatter, resolves/creates authors, optimizes images (SVG passthrough, WebP conversion of all raster images) and writes descriptive alt text for each, converts {{term|explanation}} markers and any markdown footnotes into Tooltip components (the site has no footnotes), and validates against the site's content schema. Use when asked to add/publish an edited Byte article to the website.
 ---
 
 # انتشار بایت
@@ -56,7 +56,7 @@ description: Publishes a byte-virastari-corrected Persian article (text + loose 
    ساخت نویسندهٔ جدید. هرگز خودسرانه تصمیم نگیر.
 
 5. **پردازش تصاویر.** طبق `references/tasavir.md` — SVGها بدون تغییر،
-   رستری‌های بزرگ‌تر از ۳۰۰ کیلوبایت با `cwebp` به WebP تبدیل شوند،
+   همهٔ رستری‌ها با `cwebp` به WebP تبدیل و در `img/` مقاله (داخل سایت) قرار بگیرند،
    ارجاعات داخل متن به‌روزرسانی شوند، فایل‌ها در `img/` مقالهٔ جدید (و
    عکس نویسنده در صورت وجود در `public/img/authors/`، به‌صورت JPEG/PNG
    و نه WebP) قرار بگیرند. برای **هر** تصویر داخل متن متن جایگزین
