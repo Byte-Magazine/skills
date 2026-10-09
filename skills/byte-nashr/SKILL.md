@@ -1,6 +1,6 @@
 ---
 name: byte-nashr
-description: Publishes a byte-virastari-corrected Persian article (text + loose images) into the byte-new-website repo as a schema-valid MDX article — writes SEO-ready frontmatter, resolves/creates authors, optimizes images (SVG passthrough, WebP conversion over 300KB) and writes descriptive alt text for each, converts {{term|explanation}} footnote markers into Tooltip components, and validates against the site's content schema. Use when asked to add/publish an edited Byte article to the website.
+description: Publishes a byte-virastari-corrected Persian article (text + loose images) into the byte-new-website repo as a schema-valid MDX article — writes SEO-ready frontmatter, resolves/creates authors, optimizes images (SVG passthrough, WebP conversion over 300KB) and writes descriptive alt text for each, converts {{term|explanation}} markers and any markdown footnotes into Tooltip components (the site has no footnotes), and validates against the site's content schema. Use when asked to add/publish an edited Byte article to the website.
 ---
 
 # انتشار بایت
@@ -65,15 +65,33 @@ description: Publishes a byte-virastari-corrected Persian article (text + loose 
 6. **تیترها.** تیترهای داخل متن از `##` شروع شوند، نه `#` (عنوان مقاله
    تنها `<h1>` صفحه است).
 
-7. **تبدیل پاورقی به Tooltip.** هر نشانهٔ `{{واژه یا عبارت|توضیح}}` در
-   متن را به این JSX تبدیل کن:
+7. **تبدیل پاورقی به Tooltip — در سایت بایت فوت‌نوت وجود ندارد.**
+   فقط Tooltip داریم؛ پس **هر** پاورقی‌ای باید Tooltip شود:
 
-   ```jsx
-   <Tooltip tip="توضیح"><span>واژه یا عبارت</span></Tooltip>
-   ```
+   - نشانهٔ `{{واژه یا عبارت|توضیح}}` →
 
-   دقیقاً مطابق الگوی استفادهٔ موجود در `components/content/tooltip.tsx`
-   و مقالات چاپ‌شده.
+     ```jsx
+     <Tooltip tip="توضیح"><span>واژه یا عبارت</span></Tooltip>
+     ```
+
+     دقیقاً مطابق الگوی `components/content/tooltip.tsx` و مقالات چاپ‌شده.
+   - فوت‌نوت مارک‌داون (`[^1]` در متن + `[^1]: توضیح` در انتها) را **نگه
+     نداشتن**: توضیح را در همان جای ارجاع داخل `tip` بگذار و تعریف
+     انتهایی را حذف کن. اگر ارجاع به جملهٔ کامل است نه یک واژه، نزدیک‌ترین
+     واژهٔ کلیدی قبل از نشانه را داخل Tooltip بگذار.
+   - کاراکترهای `"` داخل `tip` را با `&quot;` یا گیومهٔ فارسی «» عوض کن.
+   - ارجاعات شمارهٔ کتاب‌شناختی مثل `[۱]` که به فهرست «منابع» پایان مقاله
+     وصل‌اند فوت‌نوت نیستند و می‌مانند؛ فهرست منابع را **LTR** کن:
+
+     ```mdx
+     ## پانویس‌ها و منابع
+
+     <div dir="ltr" style={{ textAlign: "left" }}>
+
+     [۱] ...
+
+     </div>
+     ```
 
 8. **اعتبارسنجی.** داخل ریپوی `byte-new-website` اجرا کن:
 
@@ -86,6 +104,38 @@ description: Publishes a byte-virastari-corrected Persian article (text + loose 
    `lib/content/schema.test.ts`)، آن را برای کاربر توضیح بده و اصلاح
    کن؛ دوباره اعتبارسنجی را اجرا کن تا پاک شود.
 
+## نکات تکمیلی (از تجربهٔ انتشار)
+
+- **شاخهٔ git:** اگر کاربر خواست، قبل از هر تغییر یک شاخهٔ جدید به نام
+  شمارهٔ مجله (مثلاً `00001010`) بساز؛ commit نکن مگر خودش بگوید.
+- **شمارهٔ جدید (فقط با درخواست صریح کاربر):** پوشهٔ
+  `content/issues/<issue>/` + `meta.json` (نمونه: `00001001/meta.json` با
+  `number, title, description, date, cover, themeColor`)؛ کاور (مثلاً
+  `<issue>_2x.webp`) را به `public/img/<issue>.webp` ببر. `themeColor` را
+  انتخاب کن و به کاربر بگو.
+- **تست‌ها:** `lib/content/graph.test.ts` تعداد شمارهٔ‌ها و مقالات را
+  hardcode کرده؛ بعد از افزودن مقاله/شماره آن اعداد (و عنوان تست) را
+  به‌روز کن، وگرنه `pnpm test` می‌شکند.
+- **عکس نویسنده:** اگر کاربر لینک داد، با `curl -L` در
+  `public/img/authors/<id>.jpg` دانلود کن؛ اگر فایل محلی است (JPEG/PNG)
+  با `sips -Z 640` کوچک کن. نتیجه را در `authors.ts` (قبل از بخش «اساتید
+  همراه») ثبت کن؛ `role: "professor"` فقط اگر کاربر بگوید.
+- **اندازهٔ تصویر:** اگر کاربر خواست تصویری کوچک‌تر نمایش داده شود:
+
+  ```mdx
+  <div style={{ width: "50%", margin: "0 auto" }}>
+
+  ![متن جایگزین](./img/x.png)
+
+  </div>
+  ```
+- **GIF متحرک:** تبدیل به WebP متحرک با
+  `ffmpeg -i in.gif -vf scale=800:-1 -c:v libwebp -q:v 30 -loop 0 out.webp`
+  (`gif2webp`/کیفیت بالا معمولاً بزرگ‌تر از GIF می‌شود). اگر باز هم حجم
+  زیاد بود به کاربر گزارش بده.
+- **مقالهٔ بدون عنوان:** اگر فایل ویراستاری عنوان ندارد، از کاربر بپرس؛
+  عنوان را از کشیدگی (ســــوکت) و فاصلهٔ ناقص پاک کن.
+
 ## کارهایی که این اسکیل هرگز انجام نمی‌دهد
 
 - **commit یا push نمی‌کند** — تغییرات را در working tree می‌گذارد تا
@@ -93,7 +143,8 @@ description: Publishes a byte-virastari-corrected Persian article (text + loose 
 - **`pnpm build` یا `pnpm prebuild` اجرا نمی‌کند** — این دستورها
   `public/` را تغییر می‌دهند و OG image تولید می‌کنند؛ این خارج از
   مسئولیت این اسکیل است.
-- `content/issues/<issue>/meta.json` را نمی‌سازد یا ویرایش نمی‌کند.
+- `content/issues/<issue>/meta.json` را خودسرانه نمی‌سازد؛ فقط اگر کاربر
+  صراحتاً گفت شمارهٔ جدید را اضافه کن (بخش «شمارهٔ جدید» پایین).
 - به `content/data/staff.ts` چیزی اضافه نمی‌کند مگر کاربر صراحتاً
   بخواهد.
 
