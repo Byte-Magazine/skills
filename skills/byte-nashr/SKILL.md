@@ -58,8 +58,7 @@ description: Publishes a byte-virastari-corrected Persian article (text + loose 
 5. **پردازش تصاویر.** طبق `references/tasavir.md` — SVGها بدون تغییر،
    همهٔ رستری‌ها با `cwebp` به WebP تبدیل و در `img/` مقاله (داخل سایت) قرار بگیرند،
    ارجاعات داخل متن به‌روزرسانی شوند، فایل‌ها در `img/` مقالهٔ جدید (و
-   عکس نویسنده در صورت وجود در `public/img/authors/`، به‌صورت JPEG/PNG
-   و نه WebP) قرار بگیرند. برای **هر** تصویر داخل متن متن جایگزین
+   عکس نویسنده در صورت وجود در `public/img/authors/`، آن هم WebP) قرار بگیرند. برای **هر** تصویر داخل متن متن جایگزین
    توصیفی بنویس (`![...](./img/x.webp)`) — جزئیات در `references/tasavir.md`.
 
 6. **تیترها.** تیترهای داخل متن از `##` شروع شوند، نه `#` (عنوان مقاله
@@ -117,8 +116,7 @@ description: Publishes a byte-virastari-corrected Persian article (text + loose 
   hardcode کرده؛ بعد از افزودن مقاله/شماره آن اعداد (و عنوان تست) را
   به‌روز کن، وگرنه `pnpm test` می‌شکند.
 - **عکس نویسنده:** اگر کاربر لینک داد، با `curl -L` در
-  `public/img/authors/<id>.jpg` دانلود کن؛ اگر فایل محلی است (JPEG/PNG)
-  با `sips -Z 640` کوچک کن. نتیجه را در `authors.ts` (قبل از بخش «اساتید
+  `public/img/authors/` دانلود و طبق `tasavir.md` به `<id>.webp` تبدیل کن. نتیجه را در `authors.ts` (قبل از بخش «اساتید
   همراه») ثبت کن؛ `role: "professor"` فقط اگر کاربر بگوید.
 - **اندازهٔ تصویر:** اگر کاربر خواست تصویری کوچک‌تر نمایش داده شود:
 
